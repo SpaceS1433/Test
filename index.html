@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Factorial Tree</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: #f2f2f7;
+    color: #333;
+    padding: 20px;
+  }
+
+  h1 {
+    color: #2a6592;
+  }
+
+  input, button {
+    padding: 10px;
+    margin: 10px;
+    font-size: 1em;
+  }
+
+  #tree {
+    margin-top: 30px;
+    text-align: left;
+    display: inline-block;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+
+  ul {
+    list-style-type: none;
+    padding-left: 20px;
+    position: relative;
+  }
+
+  ul::before {
+    content: "";
+    border-left: 2px solid #888;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 8px;
+  }
+
+  li {
+    margin: 10px 0;
+    cursor: pointer;
+  }
+
+  li span {
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: #e3f2fd;
+    transition: background 0.3s;
+  }
+
+  li span:hover {
+    background: #bbdefb;
+  }
+
+  .collapsed > ul {
+    display: none;
+  }
+
+  #result {
+    margin-top: 10px;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+  <h1>🌳 Interactive Factorial Tree Visualizer</h1>
+  <p>Enter a number to see its factorial tree expansion.</p>
+  
+  <input type="number" id="numberInput" min="1" max="10" placeholder="Enter n (1-10)">
+  <button onclick="generateTree()">Generate Tree</button>
+  
+  <div id="result"></div>
+  <div id="tree"></div>
+
+  <script>
+    function factorial(n) {
+      return n === 1 ? 1 : n * factorial(n - 1);
+    }
+
+    function createTree(n) {
+      const li = document.createElement('li');
+      const span = document.createElement('span');
+      span.textContent = n > 1 ? `${n}! = ${n} × (${n-1}!)` : '1! = 1';
+      li.appendChild(span);
+
+      if (n > 1) {
+        const ul = document.createElement('ul');
+        ul.appendChild(createTree(n - 1));
+        li.appendChild(ul);
+      }
+
+      span.addEventListener('click', () => {
+        li.classList.toggle('collapsed');
+      });
+
+      return li;
+    }
+
+    function generateTree() {
+      const n = parseInt(document.getElementById('numberInput').value);
+      const treeContainer = document.getElementById('tree');
+      const resultContainer = document.getElementById('result');
+
+      treeContainer.innerHTML = '';
+      resultContainer.innerHTML = '';
+
+      if (isNaN(n) || n < 1 || n > 10) {
+        resultContainer.textContent = 'Please enter a number between 1 and 10.';
+        return;
+      }
+
+      const fact = factorial(n);
+      resultContainer.textContent = `✅ ${n}! = ${fact.toLocaleString()}`;
+
+      const ul = document.createElement('ul');
+      ul.appendChild(createTree(n));
+      treeContainer.appendChild(ul);
+    }
+  </script>
+</body>
+</html>
